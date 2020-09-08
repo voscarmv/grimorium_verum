@@ -16,26 +16,26 @@ export default class Player {
     // });
     
     anims.create({
-      key: 'player-idle',
+      key: 'player-idlex',
       frames: anims.generateFrameNumbers('dude', { start: 8, end: 13 }),
       frameRate: 20,
       repeat: -1
     });
 
     anims.create({
-      key: 'player-jump',
+      key: 'player-jumpx',
       frames: anims.generateFrameNumbers('dude', { start: 14, end: 15 }),
       frameRate: 20,
     });
 
     anims.create({
-      key: 'player-attack',
+      key: 'player-attackx',
       frames: anims.generateFrameNumbers('dude', { start: 16, end: 23 }),
       frameRate: 20,
     });
 
     anims.create({
-        key: 'player-run',
+        key: 'player-runx',
         frames: anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
         frameRate: 10,
         repeat: -1
@@ -56,6 +56,7 @@ export default class Player {
 
     // Create the physics-based sprite that we will move around and animate
     this.sprite = scene.matter.add.sprite(0, 0, "player", 0);
+    // this.sprite.scale
 
     // The player's body is going to be a compound body that looks something like this:
     //
@@ -83,12 +84,12 @@ export default class Player {
     const mainBody = Bodies.rectangle(0, 0, w * 0.6, h, { chamfer: { radius: 10 } });
     this.sensors = {
       bottom: Bodies.rectangle(0, h * 0.5, w * 0.25, 2, { isSensor: true }),
-      left: Bodies.rectangle(-w * 0.35, 0, 2, h * 0.5, { isSensor: true }),
-      right: Bodies.rectangle(w * 0.35, 0, 2, h * 0.5, { isSensor: true })
+      left: Bodies.rectangle(-w * 0.35, 0, 2, h * 1, { isSensor: true }),
+      right: Bodies.rectangle(w * 0.35, 0, 2, h * 1, { isSensor: true })
     };
     const compoundBody = Body.create({
       parts: [mainBody, this.sensors.bottom, this.sensors.left, this.sensors.right],
-      frictionStatic: 0,
+      frictionStatic: 0.5,
       frictionAir: 0.02,
       friction: 0.1
     });
@@ -127,6 +128,11 @@ export default class Player {
     this.attackInput = new MultiKey(scene, [SPACE]);
 
     this.scene.events.on("update", this.update, this);
+
+    this.destroyed = false;
+    this.scene.events.on("update", this.update, this);
+    this.scene.events.once("shutdown", this.destroy, this);
+    this.scene.events.once("destroy", this.destroy, this);
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
@@ -228,5 +234,25 @@ export default class Player {
     }
   }
 
-  destroy() {}
+  destroy() {
+    this.destroyed = true;
+
+    // Event listeners
+    this.scene.events.off("update", this.update, this);
+    this.scene.events.off("shutdown", this.destroy, this);
+    this.scene.events.off("destroy", this.destroy, this);
+    if (this.scene.matter.world) {
+      this.scene.matter.world.off("beforeupdate", this.resetTouching, this);
+    }
+
+    // Matter collision plugin
+    const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];
+    this.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
+    this.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
+
+    // Don't want any timers triggering post-mortem
+    if (this.jumpCooldownTimer) this.jumpCooldownTimer.destroy();
+
+    this.sprite.destroy();
+  }
 }

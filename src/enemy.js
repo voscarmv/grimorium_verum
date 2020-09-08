@@ -133,6 +133,11 @@ export default class Enemy {
     this.attackInput = new MultiKey(scene, [SPACE]);
 
     this.scene.events.on("update", this.update, this);
+
+    this.destroyed = false;
+    this.scene.events.on("update", this.update, this);
+    this.scene.events.once("shutdown", this.destroy, this);
+    this.scene.events.once("destroy", this.destroy, this);
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
@@ -239,5 +244,26 @@ export default class Enemy {
     }
   }
 
-  destroy() {}
+  destroy() {
+
+    this.destroyed = true;
+
+    // Event listeners
+    this.scene.events.off("update", this.update, this);
+    this.scene.events.off("shutdown", this.destroy, this);
+    this.scene.events.off("destroy", this.destroy, this);
+    if (this.scene.matter.world) {
+      this.scene.matter.world.off("beforeupdate", this.resetTouching, this);
+    }
+
+    // Matter collision plugin
+    const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];
+    this.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
+    this.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
+
+    // Don't want any timers triggering post-mortem
+    if (this.jumpCooldownTimer) this.jumpCooldownTimer.destroy();
+
+    this.sprite.destroy();
+  }
 }
