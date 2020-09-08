@@ -1,11 +1,13 @@
 // import skyImg from "../tutorial/assets/sky.png";
 // import gndImg from "../tutorial/assets/platform.png";
 import dudeImg from "./assets/w.png";
+import enemyImg from "./assets/ghost.png"
 // import starImg from "../tutorial/assets/star.png";
 // import bombImg from "../tutorial/assets/bomb.png";
 import tileSet from "./assets/mainlevbuild.png";
 import mapJSON from "./assets/map1.json";
 import Player from "./player"
+import Enemy from "./enemy"
 
 // var score = 0;
 // var scoreText;
@@ -29,6 +31,7 @@ export default class MainScene extends Phaser.Scene {
     // this.load.image("star", starImg);
     // this.load.image("bomb", bombImg);
     this.load.spritesheet("dude", dudeImg, { frameWidth: 231, frameHeight: 190 });
+    this.load.spritesheet("ghost", enemyImg, { frameWidth: 64, frameHeight: 80 });
   }
   
   create() {
@@ -45,6 +48,10 @@ export default class MainScene extends Phaser.Scene {
 
     // const { x, y } = map.findObject("Spawn", obj => obj.name === "Spawn Point");
     this.player = new Player(this, 300, 200);
+    this.enemy1 = new Enemy(this, 600, 200, 100);
+    this.enemy2 = new Enemy(this, 600, 200, 100);
+    this.enemy3 = new Enemy(this, 550, 100, 70);
+    this.enemy4 = new Enemy(this, 620, 150, 80);
 
     for (let i = 0; i < 35; i++) {
       const x = this.player.sprite.x + Phaser.Math.RND.integerInRange(-50, 50);

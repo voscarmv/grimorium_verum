@@ -1,8 +1,14 @@
 import Phaser from "phaser";
 import MultiKey from "./multi-key.js";
 
+let isRightKeyDown = false;
+let isLeftKeyDown = true;
+
 export default class Enemy {
-  constructor(scene, x, y) {
+  constructor(scene, x, y, width) {
+    this.initial_x = x;
+    this.range = width;
+
     this.scene = scene;
 
     // Create the animations we need from the player spritesheet
@@ -16,27 +22,27 @@ export default class Enemy {
     // });
     
     anims.create({
-      key: 'player-idle',
-      frames: anims.generateFrameNumbers('dude', { start: 8, end: 13 }),
-      frameRate: 20,
+      key: 'ghost-idle',
+      frames: anims.generateFrameNumbers('ghost', { start: 0, end: 3 }),
+      frameRate: 10,
       repeat: -1
     });
 
     anims.create({
-      key: 'player-jump',
-      frames: anims.generateFrameNumbers('dude', { start: 14, end: 15 }),
-      frameRate: 20,
+      key: 'ghost-jump',
+      frames: anims.generateFrameNumbers('ghost', { start: 0, end: 3 }),
+      frameRate: 10,
     });
 
     anims.create({
-      key: 'player-attack',
-      frames: anims.generateFrameNumbers('dude', { start: 16, end: 23 }),
-      frameRate: 20,
+      key: 'ghost-attack',
+      frames: anims.generateFrameNumbers('ghost', { start: 0, end: 3 }),
+      frameRate: 10,
     });
 
     anims.create({
-        key: 'player-run',
-        frames: anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
+        key: 'ghost-run',
+        frames: anims.generateFrameNumbers('ghost', { start: 0, end: 3 }),
         frameRate: 10,
         repeat: -1
     });
@@ -164,12 +170,20 @@ export default class Enemy {
 
     const sprite = this.sprite;
     const velocity = sprite.body.velocity;
-    const isRightKeyDown = this.rightInput.isDown();
-    const isLeftKeyDown = this.leftInput.isDown();
-    const isJumpKeyDown = this.jumpInput.isDown();
+
+    const isJumpKeyDown = true;
     const isOnGround = this.isTouching.ground;
-    const isAttackKeyDown = this.attackInput.isDown();
+    const isAttackKeyDown = false;
     const isInAir = !isOnGround;
+
+    if(this.sprite.x < this.initial_x - this.range){
+      isLeftKeyDown = false;
+      isRightKeyDown = true;
+    }
+    if(this.sprite.x > this.initial_x + this.range){
+      isLeftKeyDown = true;
+      isRightKeyDown = false;
+    }
 
     // --- Move the player horizontally ---
 
@@ -200,7 +214,7 @@ export default class Enemy {
 
     // --- Move the player vertically ---
 
-    if (isJumpKeyDown && this.canJump && isOnGround && !isAttackKeyDown) {
+    if (isJumpKeyDown && this.canJump && isOnGround) {
       sprite.setVelocityY(-11);
 
       // Add a slight delay between jumps since the bottom sensor will still collide for a few
@@ -215,14 +229,11 @@ export default class Enemy {
 
 
     // Update the animation/texture based on the state of the player's state
-    if(isAttackKeyDown){
-      console.log("ATTACK!");
-      sprite.anims.play("player-attack", true);
-    } else if (isOnGround) {
-      if (sprite.body.force.x !== 0) sprite.anims.play("player-run", true);
-      else sprite.anims.play("player-idle", true);
+    if (isOnGround) {
+      if (sprite.body.force.x !== 0) sprite.anims.play("ghost-run", true);
+      else sprite.anims.play("ghost-idle", true);
     } else {
-      sprite.anims.play("player-jump", true);
+      sprite.anims.play("ghost-jump", true);
       // sprite.anims.stop();
       // sprite.setTexture("player", 10);
     }
