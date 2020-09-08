@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import MultiKey from "./multi-key.js";
 
-export default class Player {
+export default class Enemy {
   constructor(scene, x, y) {
     this.scene = scene;
 

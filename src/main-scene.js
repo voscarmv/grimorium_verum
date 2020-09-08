@@ -46,6 +46,19 @@ export default class MainScene extends Phaser.Scene {
     // const { x, y } = map.findObject("Spawn", obj => obj.name === "Spawn Point");
     this.player = new Player(this, 300, 200);
 
+    for (let i = 0; i < 35; i++) {
+      const x = this.player.sprite.x + Phaser.Math.RND.integerInRange(-50, 50);
+      const y = this.player.sprite.y - 150 + Phaser.Math.RND.integerInRange(-10, 10);
+      this.matter.add
+        .image(x, y, "emoji", "1f60d", {
+          restitution: 1,
+          friction: 0,
+          density: 0.0001,
+          shape: "circle"
+        })
+        .setScale(0.5);
+    }
+
     // platforms.setCollisionByExclusion(-1, true);
     // const logo = this.add.image(400, 150, "logo");
   
