@@ -61,7 +61,7 @@ export default class MainScene extends Phaser.Scene {
       gameObjectB.destroy();
       return;
     }
-    console.log(`Touched by ${gameObjectB.constructor.name}`);
+    // console.log(`Touched by ${gameObjectB.constructor.name}`);
 
 
     const enemy = gameObjectB;
@@ -73,7 +73,7 @@ export default class MainScene extends Phaser.Scene {
     this.player.freeze();
     const cam = this.cameras.main;
     cam.fade(250, 0, 0, 0);
-    cam.once("camerafadeoutcomplete", () => this.scene.restart());
+    cam.once("camerafadeoutcomplete", () => this.scene.switch('score'));
   }
 
   update() {
