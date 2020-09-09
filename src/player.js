@@ -1,10 +1,12 @@
 import Phaser from "phaser";
 import MultiKey from "./multi-key.js";
 
+const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
+
 export default class Player {
   constructor(scene, x, y) {
     this.scene = scene;
-
+    this.isAttacking = false;
     // Create the animations we need from the player spritesheet
     const anims = scene.anims;
 
@@ -16,26 +18,26 @@ export default class Player {
     // });
     
     anims.create({
-      key: 'player-idlex',
+      key: 'player-idle',
       frames: anims.generateFrameNumbers('dude', { start: 8, end: 13 }),
       frameRate: 20,
       repeat: -1
     });
 
     anims.create({
-      key: 'player-jumpx',
+      key: 'player-jump',
       frames: anims.generateFrameNumbers('dude', { start: 14, end: 15 }),
       frameRate: 20,
     });
 
     anims.create({
-      key: 'player-attackx',
+      key: 'player-attack',
       frames: anims.generateFrameNumbers('dude', { start: 16, end: 23 }),
       frameRate: 20,
     });
 
     anims.create({
-        key: 'player-runx',
+        key: 'player-run',
         frames: anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
         frameRate: 10,
         repeat: -1
@@ -55,8 +57,12 @@ export default class Player {
     // });
 
     // Create the physics-based sprite that we will move around and animate
-    this.sprite = scene.matter.add.sprite(0, 0, "player", 0);
-    // this.sprite.scale
+    this.sprite = scene.matter.add.sprite(0, 0, "dude", 0);
+    const { width: w, height: h } = this.sprite;
+
+    // this.scene.matter.world.remove(this.rect);
+
+    // this.sprite.scale(w * 0.5, h * 0.5);
 
     // The player's body is going to be a compound body that looks something like this:
     //
@@ -79,13 +85,11 @@ export default class Player {
     // The main body is what collides with the world. The sensors are used to determine if the
     // player is blocked by a wall or standing on the ground.
 
-    const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
-    const { width: w, height: h } = this.sprite;
-    const mainBody = Bodies.rectangle(0, 0, w * 0.6, h, { chamfer: { radius: 10 } });
+    const mainBody = Bodies.rectangle(0, 0, w * 0.2, h * 0.4, { chamfer: { radius: 10 } });
     this.sensors = {
-      bottom: Bodies.rectangle(0, h * 0.5, w * 0.25, 2, { isSensor: true }),
-      left: Bodies.rectangle(-w * 0.35, 0, 2, h * 1, { isSensor: true }),
-      right: Bodies.rectangle(w * 0.35, 0, 2, h * 1, { isSensor: true })
+      bottom: Bodies.rectangle(0, h * 0.2, w * 0.2, 1, { isSensor: true }),
+      left: Bodies.rectangle(-w * 0.1, 0, 2, h * 0.2, { isSensor: true }),
+      right: Bodies.rectangle(w * 0.1, 0, 2, h * 0.2, { isSensor: true })
     };
     const compoundBody = Body.create({
       parts: [mainBody, this.sensors.bottom, this.sensors.left, this.sensors.right],
@@ -95,7 +99,7 @@ export default class Player {
     });
     this.sprite
       .setExistingBody(compoundBody)
-      .setScale(2)
+      .setScale(1)
       .setFixedRotation() // Sets inertia to infinity so the player can't rotate
       .setPosition(x, y);
 
@@ -168,6 +172,9 @@ export default class Player {
   update() {
     if (this.destroyed) return;
 
+    let attackx = this.sprite.x + (this.sprite.width*0.2)/2 + 150;
+    let attacky = this.sprite.y - (this.sprite.height*0.4) + 60;
+
     const sprite = this.sprite;
     const velocity = sprite.body.velocity;
     const isRightKeyDown = this.rightInput.isDown();
@@ -180,7 +187,7 @@ export default class Player {
     // --- Move the player horizontally ---
 
     // Adjust the movement so that the player is slower in the air
-    const moveForce = isOnGround ? 0.01 : 0.005;
+    const moveForce = isOnGround ? 0.015 : 0.005;
 
     if (isLeftKeyDown && !isAttackKeyDown) {
       sprite.setFlipX(true);
@@ -201,8 +208,8 @@ export default class Player {
     // Limit horizontal speed, without this the player's velocity would just keep increasing to
     // absurd speeds. We don't want to touch the vertical velocity though, so that we don't
     // interfere with gravity.
-    if (velocity.x > 7) sprite.setVelocityX(7);
-    else if (velocity.x < -7) sprite.setVelocityX(-7);
+    if (velocity.x > 8) sprite.setVelocityX(8);
+    else if (velocity.x < -8) sprite.setVelocityX(-8);
 
     // --- Move the player vertically ---
 
@@ -224,10 +231,21 @@ export default class Player {
     if(isAttackKeyDown){
       console.log("ATTACK!");
       sprite.anims.play("player-attack", true);
+      this.isAttacking = true;
+      // this.scene.matter.add.gameObject(this.rect).setStatic(true);
+
+      // this.rect.collisionCategory = this.saveCC;
+      // Body.scale(this.sprite.body, 500, 100);
     } else if (isOnGround) {
+      this.isAttacking = false;
+
+      // this.scene.matter.world.remove(this.rect);
       if (sprite.body.force.x !== 0) sprite.anims.play("player-run", true);
       else sprite.anims.play("player-idle", true);
     } else {
+      this.isAttacking = false;
+
+      // this.scene.matter.world.remove(this.rect);
       sprite.anims.play("player-jump", true);
       // sprite.anims.stop();
       // sprite.setTexture("player", 10);

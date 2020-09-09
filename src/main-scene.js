@@ -5,6 +5,8 @@ import mapJSON from "./assets/map1.json";
 import Player from "./player"
 import Enemy from "./enemy"
 
+const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
+
 export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.tilemapTiledJSON("map", mapJSON);
@@ -29,7 +31,7 @@ export default class MainScene extends Phaser.Scene {
     this.enemy1 = new Enemy(this, 600, 200, 100);
     this.enemy2 = new Enemy(this, 600, 200, 100);
     this.enemy3 = new Enemy(this, 550, 100, 70);
-    this.enemy4 = new Enemy(this, 620, 150, 80);
+    this.enemy4 = new Enemy(this, 620, 150, 20);
 
     // for (let i = 0; i < 35; i++) {
     //   const x = this.player.sprite.x + Phaser.Math.RND.integerInRange(-50, 50);
@@ -55,7 +57,10 @@ export default class MainScene extends Phaser.Scene {
   onPlayerCollide({ gameObjectB }) {
 
     if (!gameObjectB || !(gameObjectB.constructor.name == 'MatterSprite')) return;
-
+    if(this.player.isAttacking) {
+      gameObjectB.destroy();
+      return;
+    }
     console.log(`Touched by ${gameObjectB.constructor.name}`);
 
 

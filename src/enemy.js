@@ -6,6 +6,7 @@ let isLeftKeyDown = true;
 
 export default class Enemy {
   constructor(scene, x, y, width) {
+    this.destroyed = false;
     this.initial_x = x;
     this.range = width;
 
@@ -61,7 +62,7 @@ export default class Enemy {
     // });
 
     // Create the physics-based sprite that we will move around and animate
-    this.sprite = scene.matter.add.sprite(0, 0, "player", 0);
+    this.sprite = scene.matter.add.sprite(0, 0, "enemy", 0);
 
     // The player's body is going to be a compound body that looks something like this:
     //
@@ -141,6 +142,7 @@ export default class Enemy {
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
+    // if(!this.body) return;
     // Watch for the player colliding with walls/objects on either side and the ground below, so
     // that we can use that logic inside of update to move the player.
     // Note: we are using the "pair.separation" here. That number tells us how much bodyA and bodyB
@@ -171,7 +173,7 @@ export default class Enemy {
   }
 
   update() {
-    if (this.destroyed) return;
+    if (!this.sprite.body) return;
 
     const sprite = this.sprite;
     const velocity = sprite.body.velocity;
@@ -248,21 +250,21 @@ export default class Enemy {
 
     this.destroyed = true;
 
-    // Event listeners
-    this.scene.events.off("update", this.update, this);
-    this.scene.events.off("shutdown", this.destroy, this);
-    this.scene.events.off("destroy", this.destroy, this);
-    if (this.scene.matter.world) {
-      this.scene.matter.world.off("beforeupdate", this.resetTouching, this);
-    }
+    // // Event listeners
+    // this.scene.events.off("update", this.update, this);
+    // this.scene.events.off("shutdown", this.destroy, this);
+    // this.scene.events.off("destroy", this.destroy, this);
+    // if (this.scene.matter.world) {
+    //   this.scene.matter.world.off("beforeupdate", this.resetTouching, this);
+    // }
 
-    // Matter collision plugin
-    const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];
-    this.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
-    this.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
+    // // Matter collision plugin
+    // const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];
+    // this.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
+    // this.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
 
-    // Don't want any timers triggering post-mortem
-    if (this.jumpCooldownTimer) this.jumpCooldownTimer.destroy();
+    // // Don't want any timers triggering post-mortem
+    // if (this.jumpCooldownTimer) this.jumpCooldownTimer.destroy();
 
     this.sprite.destroy();
   }
