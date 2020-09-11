@@ -75,6 +75,7 @@ Sprite credits:
 - [Wizard pack](https://luizmelo.itch.io/wizard-pack)
 - [Demon pack (Gothicvania Patreon Collection)](https://ansimuz.itch.io/gothicvania-patreon-collection)
 - [Platformer Fantasy Set 2](https://szadiart.itch.io/platformer-fantasy-set2)
+- [Michael Hadley's excellent tutorial on Matter.js](https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-5-matter-physics-platformer-d14d1f614557)
 
 ## 📝 License
 
