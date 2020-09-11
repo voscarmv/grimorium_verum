@@ -142,7 +142,7 @@ export default class Enemy {
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
-    // if(!this.body) return;
+    if (!this.sprite.body) return;
     // Watch for the player colliding with walls/objects on either side and the ground below, so
     // that we can use that logic inside of update to move the player.
     // Note: we are using the "pair.separation" here. That number tells us how much bodyA and bodyB

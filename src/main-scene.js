@@ -7,6 +7,12 @@ import Enemy from "./enemy"
 
 const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
 
+let score = 0;
+let scoreText = null;
+let lvlText = null;
+let level = 1;
+let enemies = 0;
+
 export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.tilemapTiledJSON("map", mapJSON);
@@ -28,10 +34,23 @@ export default class MainScene extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(platforms);
 
     this.player = new Player(this, 300, 200);
-    this.enemy1 = new Enemy(this, 600, 200, 100);
-    this.enemy2 = new Enemy(this, 600, 200, 100);
-    this.enemy3 = new Enemy(this, 550, 100, 70);
-    this.enemy4 = new Enemy(this, 620, 150, 20);
+
+    const spawnRegion = { x: 400, y: 0, width: 400, height: 300 };
+    enemies = level * 5;
+    let enemySprites = [];
+
+    for(let i = 0; i < enemies; i += 1){
+      enemySprites.push(new Enemy(this,
+        Phaser.Math.RND.integerInRange(spawnRegion.x, spawnRegion.x + spawnRegion.width),
+        Phaser.Math.RND.integerInRange(spawnRegion.y, spawnRegion.y + spawnRegion.height) - 100,
+        50
+      ));
+    }
+
+    // this.enemy1 = new Enemy(this, 600, 200, 100);
+    // this.enemy2 = new Enemy(this, 600, 200, 100);
+    // this.enemy3 = new Enemy(this, 550, 100, 70);
+    // this.enemy4 = new Enemy(this, 620, 150, 20);
 
     // for (let i = 0; i < 35; i++) {
     //   const x = this.player.sprite.x + Phaser.Math.RND.integerInRange(-50, 50);
@@ -52,6 +71,9 @@ export default class MainScene extends Phaser.Scene {
       context: this
     });
 
+
+    scoreText = this.add.text(16, 16, 'Banished spirits: ' + score, { fontSize: '32px', fill: '#000' });
+    lvlText = this.add.text(650, 16, "Level " + level, { fontSize: '32px', fill: '#000' });
   }
 
   onPlayerCollide({ gameObjectB }) {
@@ -59,6 +81,11 @@ export default class MainScene extends Phaser.Scene {
     if (!gameObjectB || !(gameObjectB.constructor.name == 'MatterSprite')) return;
     if(this.player.isAttacking) {
       gameObjectB.destroy();
+      this.banishSpirit();
+      if(enemies == 0){
+        level += 1;
+        this.scene.restart();
+      }
       return;
     }
     // console.log(`Touched by ${gameObjectB.constructor.name}`);
@@ -74,6 +101,13 @@ export default class MainScene extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.fade(250, 0, 0, 0);
     cam.once("camerafadeoutcomplete", () => this.scene.switch('score'));
+  }
+
+  banishSpirit (player, star)
+  {
+      score += 1;
+      enemies -= 1;
+      scoreText.setText('Banished spirits: ' + score);
   }
 
   update() {
