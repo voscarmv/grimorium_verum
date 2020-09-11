@@ -5,18 +5,18 @@ import mapJSON from "./assets/map1.json";
 import Player from "./player"
 import Enemy from "./enemy"
 
-const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
+const { Body, Bodies } = Phaser.Physics.Matter.Matter;
 
 let score = 0;
 let scoreText = null;
 let lvlText = null;
 let level = 1;
 let enemies = 0;
+let enemySprites = [];
 
 export default class MainScene extends Phaser.Scene {
   init(data) {
     if(data){
-      console.log('there is data ');
       if(data.reset){
         score = 0;
         level = 1;  
@@ -27,33 +27,34 @@ export default class MainScene extends Phaser.Scene {
   preload() {
     this.load.tilemapTiledJSON("map", mapJSON);
     this.load.image("tiles", tileSet);
-    this.load.image("sky", "../tutorial/assets/sky.png");
     this.load.spritesheet("dude", dudeImg, { frameWidth: 231, frameHeight: 190 });
     this.load.spritesheet("ghost", enemyImg, { frameWidth: 64, frameHeight: 80 });
   }
   
   create() {
-    this.add.image(400, 300, 'sky');
-  
     const map = this.make.tilemap({ key: "map" });
     const tileset = map.addTilesetImage('platforms', "tiles");
     const platforms = map.createDynamicLayer('Tile Layer 1', tileset, 0, 0);
 
-
     platforms.setCollisionByProperty({ collides: true });
     this.matter.world.convertTilemapLayer(platforms);
 
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.matter.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
     this.player = new Player(this, 300, 200);
 
-    const spawnRegion = { x: 400, y: 0, width: 400, height: 300 };
+    this.cameras.main.startFollow(this.player.sprite, false, 0.5, 0.5);
+
+    const spawnRegion = { x: 500, y: 100, width: map.widthInPixels - 600, height: 150 };
     enemies = level * 5;
-    let enemySprites = [];
+    enemySprites = [];
 
     for(let i = 0; i < enemies; i += 1){
       enemySprites.push(new Enemy(this,
         Phaser.Math.RND.integerInRange(spawnRegion.x, spawnRegion.x + spawnRegion.width),
-        Phaser.Math.RND.integerInRange(spawnRegion.y, spawnRegion.y + spawnRegion.height) - 100,
-        50
+        Phaser.Math.RND.integerInRange(spawnRegion.y, spawnRegion.y + spawnRegion.height),
+        200
       ));
     }
 
@@ -63,9 +64,11 @@ export default class MainScene extends Phaser.Scene {
       context: this
     });
 
+    scoreText = this.add.text(16, 16, 'Banished spirits: ' + score, { fontSize: '32px', fill: '#fff' });
+    lvlText = this.add.text(650, 16, "Level " + level, { fontSize: '32px', fill: '#fff' });
 
-    scoreText = this.add.text(16, 16, 'Banished spirits: ' + score, { fontSize: '32px', fill: '#000' });
-    lvlText = this.add.text(650, 16, "Level " + level, { fontSize: '32px', fill: '#000' });
+    scoreText.setScrollFactor(0).setDepth(1000);
+    lvlText.setScrollFactor(0).setDepth(1000);
   }
 
   onPlayerCollide({ gameObjectB }) {

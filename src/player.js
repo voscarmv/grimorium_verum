@@ -1,21 +1,13 @@
 import Phaser from "phaser";
 import MultiKey from "./multi-key.js";
 
-const { Body, Bodies } = Phaser.Physics.Matter.Matter; // Native Matter modules
+const { Body, Bodies } = Phaser.Physics.Matter.Matter;
 
 export default class Player {
   constructor(scene, x, y) {
     this.scene = scene;
     this.isAttacking = false;
-    // Create the animations we need from the player spritesheet
     const anims = scene.anims;
-
-    // this.anims.create({
-    //     key: 'left',
-    //     frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-    //     frameRate: 10,
-    //     repeat: -1
-    // });
     
     anims.create({
       key: 'player-idle',
@@ -42,49 +34,8 @@ export default class Player {
         frameRate: 10,
         repeat: -1
     });
-
-    // anims.create({
-    //   key: "player-idle",
-    //   frames: anims.generateFrameNumbers("player", { start: 0, end: 3 }),
-    //   frameRate: 3,
-    //   repeat: -1
-    // });
-    // anims.create({
-    //   key: "player-run",
-    //   frames: anims.generateFrameNumbers("player", { start: 8, end: 15 }),
-    //   frameRate: 12,
-    //   repeat: -1
-    // });
-
-    // Create the physics-based sprite that we will move around and animate
     this.sprite = scene.matter.add.sprite(0, 0, "dude", 0);
     const { width: w, height: h } = this.sprite;
-
-    // this.scene.matter.world.remove(this.rect);
-
-    // this.sprite.scale(w * 0.5, h * 0.5);
-
-    // The player's body is going to be a compound body that looks something like this:
-    //
-    //                  A = main body
-    //
-    //                   +---------+
-    //                   |         |
-    //                 +-+         +-+
-    //       B = left  | |         | |  C = right
-    //    wall sensor  |B|    A    |C|  wall sensor
-    //                 | |         | |
-    //                 +-+         +-+
-    //                   |         |
-    //                   +-+-----+-+
-    //                     |  D  |
-    //                     +-----+
-    //
-    //                D = ground sensor
-    //
-    // The main body is what collides with the world. The sensors are used to determine if the
-    // player is blocked by a wall or standing on the ground.
-
     const mainBody = Bodies.rectangle(0, 0, w * 0.2, h * 0.4, { chamfer: { radius: 10 } });
     this.sensors = {
       bottom: Bodies.rectangle(0, h * 0.2, w * 0.2, 1, { isSensor: true }),
@@ -100,17 +51,14 @@ export default class Player {
     this.sprite
       .setExistingBody(compoundBody)
       .setScale(1)
-      .setFixedRotation() // Sets inertia to infinity so the player can't rotate
+      .setFixedRotation()
       .setPosition(x, y);
 
-    // Track which sensors are touching something
     this.isTouching = { left: false, right: false, ground: false };
 
-    // Jumping is going to have a cooldown
     this.canJump = true;
     this.jumpCooldownTimer = null;
 
-    // Before matter's update, reset our record of which surfaces the player is touching.
     scene.matter.world.on("beforeupdate", this.resetTouching, this);
 
     scene.matterCollision.addOnCollideStart({
@@ -124,7 +72,6 @@ export default class Player {
       context: this
     });
 
-    // Track the keys
     const { LEFT, RIGHT, UP, SPACE } = Phaser.Input.Keyboard.KeyCodes;
     this.leftInput = new MultiKey(scene, [LEFT]);
     this.rightInput = new MultiKey(scene, [RIGHT]);
@@ -140,14 +87,7 @@ export default class Player {
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
-    // Watch for the player colliding with walls/objects on either side and the ground below, so
-    // that we can use that logic inside of update to move the player.
-    // Note: we are using the "pair.separation" here. That number tells us how much bodyA and bodyB
-    // overlap. We want to teleport the sprite away from walls just enough so that the player won't
-    // be able to press up against the wall and use friction to hang in midair. This formula leaves
-    // 0.5px of overlap with the sensor so that the sensor will stay colliding on the next tick if
-    // the player doesn't move.
-    if (bodyB.isSensor) return; // We only care about collisions with physical objects
+    if (bodyB.isSensor) return;
     if (bodyA === this.sensors.left) {
       this.isTouching.left = true;
       if (pair.separation > 0.5) this.sprite.x += pair.separation - 0.5;
@@ -184,40 +124,28 @@ export default class Player {
     const isAttackKeyDown = this.attackInput.isDown();
     const isInAir = !isOnGround;
 
-    // --- Move the player horizontally ---
-
-    // Adjust the movement so that the player is slower in the air
     const moveForce = isOnGround ? 0.015 : 0.005;
 
     if (isLeftKeyDown && !isAttackKeyDown) {
       sprite.setFlipX(true);
 
-      // Don't let the player push things left if they in the air
       if (!(isInAir && this.isTouching.left)) {
         sprite.applyForce({ x: -moveForce, y: 0 });
       }
     } else if (isRightKeyDown && !isAttackKeyDown) {
       sprite.setFlipX(false);
 
-      // Don't let the player push things right if they in the air
       if (!(isInAir && this.isTouching.right)) {
         sprite.applyForce({ x: moveForce, y: 0 });
       }
     }
 
-    // Limit horizontal speed, without this the player's velocity would just keep increasing to
-    // absurd speeds. We don't want to touch the vertical velocity though, so that we don't
-    // interfere with gravity.
     if (velocity.x > 8) sprite.setVelocityX(8);
     else if (velocity.x < -8) sprite.setVelocityX(-8);
-
-    // --- Move the player vertically ---
 
     if (isJumpKeyDown && this.canJump && isOnGround && !isAttackKeyDown) {
       sprite.setVelocityY(-11);
 
-      // Add a slight delay between jumps since the bottom sensor will still collide for a few
-      // frames after a jump is initiated
       this.canJump = false;
       this.jumpCooldownTimer = this.scene.time.addEvent({
         delay: 250,
@@ -225,37 +153,24 @@ export default class Player {
       });
     }
 
-
-
-    // Update the animation/texture based on the state of the player's state
     if(isAttackKeyDown){
-      console.log("ATTACK!");
       sprite.anims.play("player-attack", true);
       this.isAttacking = true;
-      // this.scene.matter.add.gameObject(this.rect).setStatic(true);
-
-      // this.rect.collisionCategory = this.saveCC;
-      // Body.scale(this.sprite.body, 500, 100);
     } else if (isOnGround) {
       this.isAttacking = false;
 
-      // this.scene.matter.world.remove(this.rect);
       if (sprite.body.force.x !== 0) sprite.anims.play("player-run", true);
       else sprite.anims.play("player-idle", true);
     } else {
       this.isAttacking = false;
 
-      // this.scene.matter.world.remove(this.rect);
       sprite.anims.play("player-jump", true);
-      // sprite.anims.stop();
-      // sprite.setTexture("player", 10);
     }
   }
 
   destroy() {
     this.destroyed = true;
 
-    // Event listeners
     this.scene.events.off("update", this.update, this);
     this.scene.events.off("shutdown", this.destroy, this);
     this.scene.events.off("destroy", this.destroy, this);
@@ -263,12 +178,10 @@ export default class Player {
       this.scene.matter.world.off("beforeupdate", this.resetTouching, this);
     }
 
-    // Matter collision plugin
     const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];
     this.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
     this.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
 
-    // Don't want any timers triggering post-mortem
     if (this.jumpCooldownTimer) this.jumpCooldownTimer.destroy();
 
     this.sprite.destroy();

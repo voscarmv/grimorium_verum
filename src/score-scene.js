@@ -4,7 +4,6 @@ import saveScore from './savescore'
 export default class ScoreScreen extends Phaser.Scene {
   init(data)
   {
-      console.log('init', data);
       this.finalScore = data.score;
   }
 
@@ -36,14 +35,14 @@ export default class ScoreScreen extends Phaser.Scene {
             text.setText("Top players:");
             scores.result.sort(
               (a, b) => {
-                if(a.score === b.score){
+                if(parseInt(a.score) === parseInt(b.score)){
                   return 0
                 } else {
-                  return(a.score < b.score) ? 1 : -1;
+                  return(parseInt(a.score) < parseInt(b.score)) ? 1 : -1;
                 }
               }
             );
-            console.log(scores);
+
             let j = 200;
 
             for(let i = 0; i < 10; i += 1){
