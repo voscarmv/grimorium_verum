@@ -1,5 +1,5 @@
-import Phaser from "phaser";
-import MultiKey from "./multi-key.js";
+import Phaser from 'phaser';
+import MultiKey from './multi-key';
 
 const { Body, Bodies } = Phaser.Physics.Matter.Matter;
 
@@ -7,13 +7,13 @@ export default class Player {
   constructor(scene, x, y) {
     this.scene = scene;
     this.isAttacking = false;
-    const anims = scene.anims;
-    
+    const { anims } = scene;
+
     anims.create({
       key: 'player-idle',
       frames: anims.generateFrameNumbers('dude', { start: 8, end: 13 }),
       frameRate: 20,
-      repeat: -1
+      repeat: -1,
     });
 
     anims.create({
@@ -29,24 +29,24 @@ export default class Player {
     });
 
     anims.create({
-        key: 'player-run',
-        frames: anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
-        frameRate: 10,
-        repeat: -1
+      key: 'player-run',
+      frames: anims.generateFrameNumbers('dude', { start: 0, end: 7 }),
+      frameRate: 10,
+      repeat: -1,
     });
-    this.sprite = scene.matter.add.sprite(0, 0, "dude", 0);
+    this.sprite = scene.matter.add.sprite(0, 0, 'dude', 0);
     const { width: w, height: h } = this.sprite;
     const mainBody = Bodies.rectangle(0, 0, w * 0.2, h * 0.4, { chamfer: { radius: 10 } });
     this.sensors = {
       bottom: Bodies.rectangle(0, h * 0.2, w * 0.2, 1, { isSensor: true }),
       left: Bodies.rectangle(-w * 0.1, 0, 2, h * 0.2, { isSensor: true }),
-      right: Bodies.rectangle(w * 0.1, 0, 2, h * 0.2, { isSensor: true })
+      right: Bodies.rectangle(w * 0.1, 0, 2, h * 0.2, { isSensor: true }),
     };
     const compoundBody = Body.create({
       parts: [mainBody, this.sensors.bottom, this.sensors.left, this.sensors.right],
       frictionStatic: 0.5,
       frictionAir: 0.02,
-      friction: 0.1
+      friction: 0.1,
     });
     this.sprite
       .setExistingBody(compoundBody)
@@ -59,31 +59,33 @@ export default class Player {
     this.canJump = true;
     this.jumpCooldownTimer = null;
 
-    scene.matter.world.on("beforeupdate", this.resetTouching, this);
+    scene.matter.world.on('beforeupdate', this.resetTouching, this);
 
     scene.matterCollision.addOnCollideStart({
       objectA: [this.sensors.bottom, this.sensors.left, this.sensors.right],
       callback: this.onSensorCollide,
-      context: this
+      context: this,
     });
     scene.matterCollision.addOnCollideActive({
       objectA: [this.sensors.bottom, this.sensors.left, this.sensors.right],
       callback: this.onSensorCollide,
-      context: this
+      context: this,
     });
 
-    const { LEFT, RIGHT, UP, SPACE } = Phaser.Input.Keyboard.KeyCodes;
+    const {
+      LEFT, RIGHT, UP, SPACE,
+    } = Phaser.Input.Keyboard.KeyCodes;
     this.leftInput = new MultiKey(scene, [LEFT]);
     this.rightInput = new MultiKey(scene, [RIGHT]);
     this.jumpInput = new MultiKey(scene, [UP]);
     this.attackInput = new MultiKey(scene, [SPACE]);
 
-    this.scene.events.on("update", this.update, this);
+    this.scene.events.on('update', this.update, this);
 
     this.destroyed = false;
-    this.scene.events.on("update", this.update, this);
-    this.scene.events.once("shutdown", this.destroy, this);
-    this.scene.events.once("destroy", this.destroy, this);
+    this.scene.events.on('update', this.update, this);
+    this.scene.events.once('shutdown', this.destroy, this);
+    this.scene.events.once('destroy', this.destroy, this);
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
@@ -112,11 +114,8 @@ export default class Player {
   update() {
     if (this.destroyed) return;
 
-    let attackx = this.sprite.x + (this.sprite.width*0.2)/2 + 150;
-    let attacky = this.sprite.y - (this.sprite.height*0.4) + 60;
-
-    const sprite = this.sprite;
-    const velocity = sprite.body.velocity;
+    const { sprite } = this;
+    const { velocity } = sprite.body;
     const isRightKeyDown = this.rightInput.isDown();
     const isLeftKeyDown = this.leftInput.isDown();
     const isJumpKeyDown = this.jumpInput.isDown();
@@ -149,33 +148,33 @@ export default class Player {
       this.canJump = false;
       this.jumpCooldownTimer = this.scene.time.addEvent({
         delay: 250,
-        callback: () => (this.canJump = true)
+        callback: () => { this.canJump = true; },
       });
     }
 
-    if(isAttackKeyDown){
-      sprite.anims.play("player-attack", true);
+    if (isAttackKeyDown) {
+      sprite.anims.play('player-attack', true);
       this.isAttacking = true;
     } else if (isOnGround) {
       this.isAttacking = false;
 
-      if (sprite.body.force.x !== 0) sprite.anims.play("player-run", true);
-      else sprite.anims.play("player-idle", true);
+      if (sprite.body.force.x !== 0) sprite.anims.play('player-run', true);
+      else sprite.anims.play('player-idle', true);
     } else {
       this.isAttacking = false;
 
-      sprite.anims.play("player-jump", true);
+      sprite.anims.play('player-jump', true);
     }
   }
 
   destroy() {
     this.destroyed = true;
 
-    this.scene.events.off("update", this.update, this);
-    this.scene.events.off("shutdown", this.destroy, this);
-    this.scene.events.off("destroy", this.destroy, this);
+    this.scene.events.off('update', this.update, this);
+    this.scene.events.off('shutdown', this.destroy, this);
+    this.scene.events.off('destroy', this.destroy, this);
     if (this.scene.matter.world) {
-      this.scene.matter.world.off("beforeupdate", this.resetTouching, this);
+      this.scene.matter.world.off('beforeupdate', this.resetTouching, this);
     }
 
     const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];

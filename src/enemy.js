@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser from 'phaser';
 
 let isRightKeyDown = false;
 let isLeftKeyDown = true;
@@ -10,13 +10,13 @@ export default class Enemy {
     this.range = width;
 
     this.scene = scene;
-    const anims = scene.anims;
-    
+    const { anims } = scene;
+
     anims.create({
       key: 'ghost-idle',
       frames: anims.generateFrameNumbers('ghost', { start: 0, end: 3 }),
       frameRate: 10,
-      repeat: -1
+      repeat: -1,
     });
 
     anims.create({
@@ -32,14 +32,14 @@ export default class Enemy {
     });
 
     anims.create({
-        key: 'ghost-run',
-        frames: anims.generateFrameNumbers('ghost', { start: 0, end: 3 }),
-        frameRate: 10,
-        repeat: -1
+      key: 'ghost-run',
+      frames: anims.generateFrameNumbers('ghost', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1,
     });
 
-    this.sprite = scene.matter.add.sprite(0, 0, "enemy", 0);
-    const { Body, Bodies } = Phaser.Physics.Matter.Matter; 
+    this.sprite = scene.matter.add.sprite(0, 0, 'enemy', 0);
+    const { Body, Bodies } = Phaser.Physics.Matter.Matter;
     const { width: w, height: h } = this.sprite;
     const mainBody = Bodies.rectangle(0, 0, w * 0.6, h, { chamfer: { radius: 10 } });
     this.sensors = {
@@ -49,12 +49,12 @@ export default class Enemy {
       parts: [mainBody, this.sensors.bottom],
       frictionStatic: 0,
       frictionAir: 0.02,
-      friction: 0.1
+      friction: 0.1,
     });
     this.sprite
       .setExistingBody(compoundBody)
       .setScale(2)
-      .setFixedRotation() 
+      .setFixedRotation()
       .setPosition(x, y);
 
     this.isTouching = { left: false, right: false, ground: false };
@@ -62,23 +62,23 @@ export default class Enemy {
     this.canJump = true;
     this.jumpCooldownTimer = null;
 
-    scene.matter.world.on("beforeupdate", this.resetTouching, this);
+    scene.matter.world.on('beforeupdate', this.resetTouching, this);
 
     scene.matterCollision.addOnCollideStart({
       objectA: [this.sensors.bottom, this.sensors.left, this.sensors.right],
       callback: this.onSensorCollide,
-      context: this
+      context: this,
     });
     scene.matterCollision.addOnCollideActive({
       objectA: [this.sensors.bottom, this.sensors.left, this.sensors.right],
       callback: this.onSensorCollide,
-      context: this
+      context: this,
     });
 
     this.destroyed = false;
-    this.scene.events.on("update", this.update, this);
-    this.scene.events.once("shutdown", this.destroy, this);
-    this.scene.events.once("destroy", this.destroy, this);
+    this.scene.events.on('update', this.update, this);
+    this.scene.events.once('shutdown', this.destroy, this);
+    this.scene.events.once('destroy', this.destroy, this);
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
@@ -108,19 +108,19 @@ export default class Enemy {
   update() {
     if (!this.sprite.body) return;
 
-    const sprite = this.sprite;
-    const velocity = sprite.body.velocity;
+    const { sprite } = this;
+    const { velocity } = sprite.body;
 
     const isJumpKeyDown = true;
     const isOnGround = this.isTouching.ground;
     const isAttackKeyDown = false;
     const isInAir = !isOnGround;
 
-    if(this.sprite.x < this.initial_x - this.range){
+    if (this.sprite.x < this.initial_x - this.range) {
       isLeftKeyDown = false;
       isRightKeyDown = true;
     }
-    if(this.sprite.x > this.initial_x + this.range){
+    if (this.sprite.x > this.initial_x + this.range) {
       isLeftKeyDown = true;
       isRightKeyDown = false;
     }
@@ -149,16 +149,15 @@ export default class Enemy {
       this.canJump = false;
       this.jumpCooldownTimer = this.scene.time.addEvent({
         delay: 250,
-        callback: () => (this.canJump = true)
+        callback: () => { this.canJump = true; },
       });
     }
 
     if (isOnGround) {
-      if (sprite.body.force.x !== 0) sprite.anims.play("ghost-run", true);
-      else sprite.anims.play("ghost-idle", true);
+      if (sprite.body.force.x !== 0) sprite.anims.play('ghost-run', true);
+      else sprite.anims.play('ghost-idle', true);
     } else {
-      sprite.anims.play("ghost-jump", true);
-
+      sprite.anims.play('ghost-jump', true);
     }
   }
 
