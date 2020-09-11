@@ -35,9 +35,8 @@ Check out the live demo [here](https://grimoriumverum.netlify.app/)
 
 ### Pre Requisites
 
-- Go to [Leaderboard API](https://www.notion.so/Leaderboard-API-service-24c0c3c116974ac49488d4eb0267ade3) and get a Key for you.
 - Install Node JS. ([NodeJS Documentation](https://nodejs.org/en/docs/)) 
-- Install Webpack. ([Webpack Documentation](https://webpack.js.org/guides/installation/)) 
+- Install Webpack. ([Webpack Documentation](https://webpack.js.org/guides/installation/))
 
 ### Install
 
