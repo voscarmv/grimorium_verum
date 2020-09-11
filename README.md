@@ -43,12 +43,9 @@ Check out the live demo [here](https://grimoriumverum.netlify.app/)
 
 - Clone this repo with `git clone`.
 - Enter the repo directory.
-- Run `npm install` && `npm run build` in your terminal.
-
-### Usage
-- Run `npm run server` in your terminal.
-- Open **http://localhost:8080** in your browser.
-- Enjoy :)
+- Run `npm install` && `npm start` in your terminal.
+- This will open **http://localhost:8080** on your browser.
+- Banish those ghouls!
 
 ## Future features
 - 
