@@ -47,7 +47,9 @@ Check out the live demo [here](https://grimoriumverum.netlify.app/)
 - Banish those ghouls!
 
 ## Future features
-- 
+Bring to life more aspects of the Grimorium Verum:
+
+Initially, the game was going to be about collecting magical items necesary for a demonic evocation. The evocation would result on a demonic Boss appearing, which the wizard would have to defiat in order to bind to his will. In the present version, the game only serves to showcase what the game mechanics would look like in a finished version of the Grimorium Verum.
 
 ## Author
 
