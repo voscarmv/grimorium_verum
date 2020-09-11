@@ -29,7 +29,7 @@ If your score is among the top 10 your name will appear at the end of the game.
 
 ## Live Demo
 
-Check out the live demo [here](https://phaser-spacecraft.netlify.app/)
+Check out the live demo [here](https://grimoriumverum.netlify.app/)
 
 ## Getting started
 
