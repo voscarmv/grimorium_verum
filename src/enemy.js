@@ -127,11 +127,11 @@ export default class Enemy {
     });
 
     // Track the keys
-    const { LEFT, RIGHT, UP, A, D, W, SPACE } = Phaser.Input.Keyboard.KeyCodes;
-    this.leftInput = new MultiKey(scene, [LEFT, A]);
-    this.rightInput = new MultiKey(scene, [RIGHT, D]);
-    this.jumpInput = new MultiKey(scene, [UP, W]);
-    this.attackInput = new MultiKey(scene, [SPACE]);
+    // const { LEFT, RIGHT, UP, A, D, W, SPACE } = Phaser.Input.Keyboard.KeyCodes;
+    // this.leftInput = new MultiKey(scene, [LEFT, A]);
+    // this.rightInput = new MultiKey(scene, [RIGHT, D]);
+    // this.jumpInput = new MultiKey(scene, [UP, W]);
+    // this.attackInput = new MultiKey(scene, [SPACE]);
 
     this.scene.events.on("update", this.update, this);
 

@@ -4,6 +4,8 @@ import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
 
 import MainScene from "./main-scene";
 import ScoreScene from "./score-scene";
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 
 const config = {
   type: Phaser.AUTO,
@@ -11,6 +13,9 @@ const config = {
   width: 800,
   height: 600,
   pixelArt: true,
+  dom: {
+    createContainer: true
+  },
   physics: {
     default: "matter"
   },
