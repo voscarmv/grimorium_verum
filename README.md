@@ -1,6 +1,8 @@
 # Grimorium Verum
 > An infinite platform game about banishing demonic spirits.
 
+![image](https://user-images.githubusercontent.com/2739245/92928704-19051a00-f405-11ea-8322-49c5a103a514.png)
+
 ## About the Game
 
 ### How to play
