@@ -29,29 +29,27 @@ If your score is among the top 10 your name will appear at the end of the game.
 
 ## Live Demo
 
-Check out the live demo [here](https://phaser-spacecraft.netlify.app/)
+Check out the live demo [here](https://grimoriumverum.netlify.app/)
 
 ## Getting started
 
 ### Pre Requisites
 
-- Go to [Leaderboard API](https://www.notion.so/Leaderboard-API-service-24c0c3c116974ac49488d4eb0267ade3) and get a Key for you.
 - Install Node JS. ([NodeJS Documentation](https://nodejs.org/en/docs/)) 
-- Install Webpack. ([Webpack Documentation](https://webpack.js.org/guides/installation/)) 
+- Install Webpack. ([Webpack Documentation](https://webpack.js.org/guides/installation/))
 
 ### Install
 
 - Clone this repo with `git clone`.
 - Enter the repo directory.
-- Run `npm install` && `npm run build` in your terminal.
-
-### Usage
-- Run `npm run server` in your terminal.
-- Open **http://localhost:8080** in your browser.
-- Enjoy :)
+- Run `npm install` && `npm start` in your terminal.
+- This will open **http://localhost:8080** on your browser.
+- Banish those ghouls!
 
 ## Future features
-- 
+Bring to life more aspects of the Grimorium Verum:
+
+Initially, the game was going to be about collecting magical items necesary for a demonic evocation, however, due to time constraints, it wasn't possible. The evocation would result on a demonic Boss appearing, which the wizard would have to defeat in order to bind it (as is detailed in the grimorium). In the present version, the game only serves to showcase what the game mechanics would look like in a finished version of the Grimorium Verum.
 
 ## Author
 
@@ -79,6 +77,7 @@ Sprite credits:
 - [Wizard pack](https://luizmelo.itch.io/wizard-pack)
 - [Demon pack (Gothicvania Patreon Collection)](https://ansimuz.itch.io/gothicvania-patreon-collection)
 - [Platformer Fantasy Set 2](https://szadiart.itch.io/platformer-fantasy-set2)
+- [Michael Hadley's excellent tutorial on Matter.js](https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-5-matter-physics-platformer-d14d1f614557)
 
 ## 📝 License
 
