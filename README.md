@@ -1,55 +1,83 @@
-# Phaser 3 Webpack Project Template
+# Grimorium Verum
+> An infinite platform game about banishing demonic spirits.
 
-A Phaser 3 project template with ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/)
-that includes hot-reloading for development and production-ready builds.
+## About the Game
 
-Loading images via JavaScript module `import` is also supported.
+### How to play
+Use the 🡰 and 🡲 keys to run and the 🡱 key to jump. To banish the spirits, use the **spacebar**.
 
-## Requirements
+You must banish all of the spirits in the realm in order to continue to the next level.
 
-[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
+The game ends when you get possessed by an evil spirit. This happens when the spirit touches you while you're not attacking.
 
-## Available Commands
+If your score is among the top 10 your name will appear at the end of the game.
 
-| Command | Description |
-|---------|-------------|
-| `npm install` | Install project dependencies |
-| `npm start` | Build project and open web server running project |
-| `npm run build` | Builds code bundle with production settings (minification, uglification, etc..) |
+### Scenes
+- **Main game**: The wizard appears in the demon-infested realm. Be careful not to get possessed!
+- **Game Over**: The game ends when the wizard becomes possessed. You may record you highest score here.
 
-## Writing Code
+### Built With
 
-After cloning the repo, run `npm install` from your project directory. Then, you can start the local development
-server by running `npm start`.
+- Node JS
+- Webpack
+- Javascript ES6
+- Babel
+- Phaser
+- Matter.js
+
+## Live Demo
+
+Check out the live demo [here](https://phaser-spacecraft.netlify.app/)
+
+## Getting started
+
+### Pre Requisites
+
+- Go to [Leaderboard API](https://www.notion.so/Leaderboard-API-service-24c0c3c116974ac49488d4eb0267ade3) and get a Key for you.
+- Install Node JS. ([NodeJS Documentation](https://nodejs.org/en/docs/)) 
+- Install Webpack. ([Webpack Documentation](https://webpack.js.org/guides/installation/)) 
+
+### Install
+
+- Clone this repo with `git clone`.
+- Enter the repo directory.
+- Run `npm install` && `npm run build` in your terminal.
+
+### Usage
+- Run `npm run server` in your terminal.
+- Open **http://localhost:8080** in your browser.
+- Enjoy :)
+
+## Future features
+- 
+
+## Author
+
+👤 **Oscar Mier**
+- Github: [@voscarmv](https://github.com/voscarmv)
+- Twitter: [@voscarmv](https://twitter.com/voscarmv)
+- Linkedin: [Oscar Mier](https://www.linkedin.com/in/oscar-mier-072984196/) 
 
 
-After starting the development server with `npm start`, you can edit any files in the `src` folder
-and webpack will automatically recompile and reload your server (available at `http://localhost:8080`
-by default).
+## 🤝 Contributing
 
-## Customizing Template
+Contributions, issues and feature requests are welcome!
 
-### Babel
-You can write modern ES6+ JavaScript and Babel will transpile it to a version of JavaScript that you
-want your project to support. The targeted browsers are set in the `.babelrc` file and the default currently
-targets all browsers with total usage over "0.25%" but excludes IE11 and Opera Mini.
+Feel free to check the [issues page](../../issues/).
 
-  ```
-  "browsers": [
-    ">0.25%",
-    "not ie 11",
-    "not op_mini all"
-  ]
-  ```
 
-### Webpack
-If you want to customize your build, such as adding a new webpack loader or plugin (i.e. for loading CSS or fonts), you can
-modify the `webpack/base.js` file for cross-project changes, or you can modify and/or create
-new configuration files and target them in specific npm tasks inside of `package.json'.
+## Show your support
 
-## Deploying Code
-After you run the `npm run build` command, your code will be built into a single bundle located at 
-`dist/bundle.min.js` along with any other assets you project depended. 
+Give a ⭐️ if you like this project!
 
-If you put the contents of the `dist` folder in a publicly-accessible location (say something like `http://mycoolserver.com`), 
-you should be able to open `http://mycoolserver.com/index.html` and play your game.
+
+## Acknowledgments
+
+Sprite credits:
+- [Wizard pack](https://luizmelo.itch.io/wizard-pack)
+- [Demon pack (Gothicvania Patreon Collection)](https://ansimuz.itch.io/gothicvania-patreon-collection)
+- [Platformer Fantasy Set 2](https://szadiart.itch.io/platformer-fantasy-set2)
+
+## 📝 License
+
+This project is [MIT](./LICENSE) licensed.
