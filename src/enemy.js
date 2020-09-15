@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+// import ghost from './assets/ghost.png';
 
 let isRightKeyDown = false;
 let isLeftKeyDown = true;
@@ -65,12 +66,12 @@ export default class Enemy {
     scene.matter.world.on('beforeupdate', this.resetTouching, this);
 
     scene.matterCollision.addOnCollideStart({
-      objectA: [this.sensors.bottom, this.sensors.left, this.sensors.right],
+      objectA: [this.sensors.bottom],
       callback: this.onSensorCollide,
       context: this,
     });
     scene.matterCollision.addOnCollideActive({
-      objectA: [this.sensors.bottom, this.sensors.left, this.sensors.right],
+      objectA: [this.sensors.bottom],
       callback: this.onSensorCollide,
       context: this,
     });
