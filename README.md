@@ -6,7 +6,7 @@
 ## About the Game
 
 ### How to play
-Use the 🡰 and 🡲 keys to run and the 🡱 key to jump. To banish the spirits, use the **spacebar**.
+Use the ◀️ and ▶️ keys to run and the 🔼 key to jump. To banish the spirits, use the **spacebar**.
 
 You must banish all of the spirits in the realm in order to continue to the next level.
 
