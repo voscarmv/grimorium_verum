@@ -8,10 +8,7 @@ let isLeftKeyDown = true;
 export default class Enemy {
   constructor(scene, x, y, width) {
     this.enemyData = new EnemyData(x, width, scene);
-    this.destroyed = false;
-    this.initial_x = x;
-    this.range = width;
-    this.scene = scene;
+    // this.enemyData.destroyed = false;
 
     const { anims } = scene;
 
@@ -60,9 +57,9 @@ export default class Enemy {
       .setFixedRotation()
       .setPosition(x, y);
 
-    this.isTouching = { left: false, right: false, ground: false };
-    this.canJump = true;
-    this.jumpCooldownTimer = null;
+    // this.isTouching = { left: false, right: false, ground: false };
+    // this.enemyData.canJump = true;
+    // this.enemyData.jumpCooldownTimer = null;
 
     scene.matter.world.on('beforeupdate', this.resetTouching, this);
 
@@ -78,29 +75,29 @@ export default class Enemy {
     });
 
     this.destroyed = false;
-    this.scene.events.on('update', this.update, this);
-    this.scene.events.once('shutdown', this.destroy, this);
-    this.scene.events.once('destroy', this.destroy, this);
+    this.enemyData.scene.events.on('update', this.update, this);
+    this.enemyData.scene.events.once('shutdown', this.destroy, this);
+    this.enemyData.scene.events.once('destroy', this.destroy, this);
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
     if (!this.sprite.body) return;
     if (bodyB.isSensor) return;
     if (bodyA === this.sensors.left) {
-      this.isTouching.left = true;
+      this.enemyData.isTouching.left = true;
       if (pair.separation > 0.5) this.sprite.x += pair.separation - 0.5;
     } else if (bodyA === this.sensors.right) {
-      this.isTouching.right = true;
+      this.enemyData.isTouching.right = true;
       if (pair.separation > 0.5) this.sprite.x -= pair.separation - 0.5;
     } else if (bodyA === this.sensors.bottom) {
-      this.isTouching.ground = true;
+      this.enemyData.isTouching.ground = true;
     }
   }
 
   resetTouching() {
-    this.isTouching.left = false;
-    this.isTouching.right = false;
-    this.isTouching.ground = false;
+    this.enemyData.isTouching.left = false;
+    this.enemyData.isTouching.right = false;
+    this.enemyData.isTouching.ground = false;
   }
 
   freeze() {
@@ -114,15 +111,15 @@ export default class Enemy {
     const { velocity } = sprite.body;
 
     const isJumpKeyDown = true;
-    const isOnGround = this.isTouching.ground;
+    const isOnGround = this.enemyData.isTouching.ground;
     const isAttackKeyDown = false;
     const isInAir = !isOnGround;
 
-    if (this.sprite.x < this.initial_x - this.range) {
+    if (this.sprite.x < this.enemyData.initial_x - this.enemyData.range) {
       isLeftKeyDown = false;
       isRightKeyDown = true;
     }
-    if (this.sprite.x > this.initial_x + this.range) {
+    if (this.sprite.x > this.enemyData.initial_x + this.enemyData.range) {
       isLeftKeyDown = true;
       isRightKeyDown = false;
     }
@@ -132,13 +129,13 @@ export default class Enemy {
     if (isLeftKeyDown && !isAttackKeyDown) {
       sprite.setFlipX(true);
 
-      if (!(isInAir && this.isTouching.left)) {
+      if (!(isInAir && this.enemyData.isTouching.left)) {
         sprite.applyForce({ x: -moveForce, y: 0 });
       }
     } else if (isRightKeyDown && !isAttackKeyDown) {
       sprite.setFlipX(false);
 
-      if (!(isInAir && this.isTouching.right)) {
+      if (!(isInAir && this.enemyData.isTouching.right)) {
         sprite.applyForce({ x: moveForce, y: 0 });
       }
     }
@@ -146,12 +143,12 @@ export default class Enemy {
     if (velocity.x > 7) sprite.setVelocityX(7);
     else if (velocity.x < -7) sprite.setVelocityX(-7);
 
-    if (isJumpKeyDown && this.canJump && isOnGround) {
+    if (isJumpKeyDown && this.enemyData.canJump && isOnGround) {
       sprite.setVelocityY(-11);
-      this.canJump = false;
-      this.jumpCooldownTimer = this.scene.time.addEvent({
+      this.enemyData.canJump = false;
+      this.enemyData.jumpCooldownTimer = this.enemyData.scene.time.addEvent({
         delay: 250,
-        callback: () => { this.canJump = true; },
+        callback: () => { this.enemyData.canJump = true; },
       });
     }
 
