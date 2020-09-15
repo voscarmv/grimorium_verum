@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import EnemyData from './enemydata';
 // import ghost from './assets/ghost.png';
 
 let isRightKeyDown = false;
@@ -6,11 +7,12 @@ let isLeftKeyDown = true;
 
 export default class Enemy {
   constructor(scene, x, y, width) {
+    this.enemyData = new EnemyData(x, width, scene);
     this.destroyed = false;
     this.initial_x = x;
     this.range = width;
-
     this.scene = scene;
+
     const { anims } = scene;
 
     anims.create({
@@ -59,7 +61,6 @@ export default class Enemy {
       .setPosition(x, y);
 
     this.isTouching = { left: false, right: false, ground: false };
-
     this.canJump = true;
     this.jumpCooldownTimer = null;
 
