@@ -15,10 +15,10 @@ export default class ScoreScreen extends Phaser.Scene {
     const text = this.add.text(100, 100, `Final score: ${this.finalScore}`);
     const form = `
     <input type="text" placeholder="Player name" id="playername" name="playername">
-    <input type="submit" value="Save Score" name="savescore">
+    <input type="submit" value="Save Score" name="savescore" class="btn">
     `;
     const again = `
-    <input type="submit" value="Play Again" name="again">
+    <input type="submit" value="Play Again" name="again" class="btn">
     `;
     const element = this.add.dom(400, 200).createFromHTML(form);
 
