@@ -4,6 +4,7 @@ import MainScene from './scenes/main-scene';
 import ScoreScene from './scenes/score-scene';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import './assets/style.css';
 
 const config = {
   type: Phaser.AUTO,
@@ -26,6 +27,7 @@ const config = {
       },
     ],
   },
+  autoCenter: true,
 };
 
 const game = new Phaser.Game(config);
