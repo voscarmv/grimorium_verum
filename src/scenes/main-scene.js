@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import dudeImg from './assets/w.png';
-import enemyImg from './assets/ghost.png';
-import tileSet from './assets/mainlevbuild.png';
-import mapJSON from './assets/map1.json';
-import Player from './player';
-import Enemy from './enemy';
+import dudeImg from '../assets/w.png';
+import enemyImg from '../assets/ghost.png';
+import tileSet from '../assets/mainlevbuild.png';
+import mapJSON from '../assets/map1.json';
+import Player from '../entities/player';
+import Enemy from '../entities/enemy';
 
 let score = 0;
 let scoreText = null;

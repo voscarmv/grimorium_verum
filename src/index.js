@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import PhaserMatterCollisionPlugin from 'phaser-matter-collision-plugin';
-import MainScene from './main-scene';
-import ScoreScene from './score-scene';
+import MainScene from './scenes/main-scene';
+import ScoreScene from './scenes/score-scene';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 

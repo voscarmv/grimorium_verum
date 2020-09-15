@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import getScore from './getscore';
-import saveScore from './savescore';
+import getScore from '../api/getscore';
+import saveScore from '../api/savescore';
 
 export default class ScoreScreen extends Phaser.Scene {
   init(data) {
