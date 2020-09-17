@@ -8,7 +8,6 @@ let isLeftKeyDown = true;
 export default class Enemy {
   constructor(scene, x, y, width) {
     this.enemyData = new EnemyData(x, width, scene);
-    // this.enemyData.destroyed = false;
 
     const { anims } = scene;
 
@@ -56,10 +55,6 @@ export default class Enemy {
       .setScale(2)
       .setFixedRotation()
       .setPosition(x, y);
-
-    // this.isTouching = { left: false, right: false, ground: false };
-    // this.enemyData.canJump = true;
-    // this.enemyData.jumpCooldownTimer = null;
 
     scene.matter.world.on('beforeupdate', this.resetTouching, this);
 

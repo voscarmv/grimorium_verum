@@ -1,8 +1,6 @@
 export default class PlayerData {
-  constructor(x, width, scene) {
+  constructor(scene) {
     this.destroyed = false;
-    this.initial_x = x;
-    this.range = width;
     this.scene = scene;
     this.isTouching = { left: false, right: false, ground: false };
     this.canJump = true;

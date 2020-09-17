@@ -1,12 +1,13 @@
 import Phaser from 'phaser';
 import MultiKey from './multi-key';
+import PlayerData from './playerdata';
 
 const { Body, Bodies } = Phaser.Physics.Matter.Matter;
 
 export default class Player {
   constructor(scene, x, y) {
-    this.scene = scene;
-    this.isAttacking = false;
+    this.playerData = new PlayerData(scene);
+
     const { anims } = scene;
 
     anims.create({
@@ -54,11 +55,6 @@ export default class Player {
       .setFixedRotation()
       .setPosition(x, y);
 
-    this.isTouching = { left: false, right: false, ground: false };
-
-    this.canJump = true;
-    this.jumpCooldownTimer = null;
-
     scene.matter.world.on('beforeupdate', this.resetTouching, this);
 
     scene.matterCollision.addOnCollideStart({
@@ -80,31 +76,31 @@ export default class Player {
     this.jumpInput = new MultiKey(scene, [UP]);
     this.attackInput = new MultiKey(scene, [SPACE]);
 
-    this.scene.events.on('update', this.update, this);
+    this.playerData.scene.events.on('update', this.update, this);
 
     this.destroyed = false;
-    this.scene.events.on('update', this.update, this);
-    this.scene.events.once('shutdown', this.destroy, this);
-    this.scene.events.once('destroy', this.destroy, this);
+    this.playerData.scene.events.on('update', this.update, this);
+    this.playerData.scene.events.once('shutdown', this.destroy, this);
+    this.playerData.scene.events.once('destroy', this.destroy, this);
   }
 
   onSensorCollide({ bodyA, bodyB, pair }) {
     if (bodyB.isSensor) return;
     if (bodyA === this.sensors.left) {
-      this.isTouching.left = true;
+      this.playerData.isTouching.left = true;
       if (pair.separation > 0.5) this.sprite.x += pair.separation - 0.5;
     } else if (bodyA === this.sensors.right) {
-      this.isTouching.right = true;
+      this.playerData.isTouching.right = true;
       if (pair.separation > 0.5) this.sprite.x -= pair.separation - 0.5;
     } else if (bodyA === this.sensors.bottom) {
-      this.isTouching.ground = true;
+      this.playerData.isTouching.ground = true;
     }
   }
 
   resetTouching() {
-    this.isTouching.left = false;
-    this.isTouching.right = false;
-    this.isTouching.ground = false;
+    this.playerData.isTouching.left = false;
+    this.playerData.isTouching.right = false;
+    this.playerData.isTouching.ground = false;
   }
 
   freeze() {
@@ -119,7 +115,7 @@ export default class Player {
     const isRightKeyDown = this.rightInput.isDown();
     const isLeftKeyDown = this.leftInput.isDown();
     const isJumpKeyDown = this.jumpInput.isDown();
-    const isOnGround = this.isTouching.ground;
+    const isOnGround = this.playerData.isTouching.ground;
     const isAttackKeyDown = this.attackInput.isDown();
     const isInAir = !isOnGround;
 
@@ -128,13 +124,13 @@ export default class Player {
     if (isLeftKeyDown && !isAttackKeyDown) {
       sprite.setFlipX(true);
 
-      if (!(isInAir && this.isTouching.left)) {
+      if (!(isInAir && this.playerData.isTouching.left)) {
         sprite.applyForce({ x: -moveForce, y: 0 });
       }
     } else if (isRightKeyDown && !isAttackKeyDown) {
       sprite.setFlipX(false);
 
-      if (!(isInAir && this.isTouching.right)) {
+      if (!(isInAir && this.playerData.isTouching.right)) {
         sprite.applyForce({ x: moveForce, y: 0 });
       }
     }
@@ -142,13 +138,13 @@ export default class Player {
     if (velocity.x > 8) sprite.setVelocityX(8);
     else if (velocity.x < -8) sprite.setVelocityX(-8);
 
-    if (isJumpKeyDown && this.canJump && isOnGround && !isAttackKeyDown) {
+    if (isJumpKeyDown && this.playerData.canJump && isOnGround && !isAttackKeyDown) {
       sprite.setVelocityY(-11);
 
-      this.canJump = false;
-      this.jumpCooldownTimer = this.scene.time.addEvent({
+      this.playerData.canJump = false;
+      this.playerData.jumpCooldownTimer = this.playerData.scene.time.addEvent({
         delay: 250,
-        callback: () => { this.canJump = true; },
+        callback: () => { this.playerData.canJump = true; },
       });
     }
 
@@ -170,18 +166,18 @@ export default class Player {
   destroy() {
     this.destroyed = true;
 
-    this.scene.events.off('update', this.update, this);
-    this.scene.events.off('shutdown', this.destroy, this);
-    this.scene.events.off('destroy', this.destroy, this);
-    if (this.scene.matter.world) {
-      this.scene.matter.world.off('beforeupdate', this.resetTouching, this);
+    this.playerData.scene.events.off('update', this.update, this);
+    this.playerData.scene.events.off('shutdown', this.destroy, this);
+    this.playerData.scene.events.off('destroy', this.destroy, this);
+    if (this.playerData.scene.matter.world) {
+      this.playerData.scene.matter.world.off('beforeupdate', this.resetTouching, this);
     }
 
     const sensors = [this.sensors.bottom, this.sensors.left, this.sensors.right];
-    this.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
-    this.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
+    this.playerData.scene.matterCollision.removeOnCollideStart({ objectA: sensors });
+    this.playerData.scene.matterCollision.removeOnCollideActive({ objectA: sensors });
 
-    if (this.jumpCooldownTimer) this.jumpCooldownTimer.destroy();
+    if (this.playerData.jumpCooldownTimer) this.playerData.jumpCooldownTimer.destroy();
 
     this.sprite.destroy();
   }
