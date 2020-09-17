@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import EnemyData from './enemydata';
-// import ghost from './assets/ghost.png';
 
 let isRightKeyDown = false;
 let isLeftKeyDown = true;

@@ -29,7 +29,9 @@ export default class ScoreScreen extends Phaser.Scene {
         try {
           const playername = element.getChildByName('playername');
           if (event.target.name === 'savescore') {
-            await saveScore(playername.value, this.finalScore);
+            const pname = playername.value;
+            const score = this.finalScore;
+            await saveScore({ user: pname, score });
             const scores = await getScore();
             element.setVisible(false);
             text.setText('Top players:');
