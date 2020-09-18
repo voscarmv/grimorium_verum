@@ -72,13 +72,13 @@ Run and jumpr around banishing demons. Once you banish all the demons in the lev
 
 Once you lose, you can register your final socre with your name here.
 
-![image](https://user-images.githubusercontent.com/2739245/93563952-8574a180-f94e-11ea-9ca8-78d15f865557.png)
+![image](https://user-images.githubusercontent.com/2739245/93564104-c66cb600-f94e-11ea-9cc7-7e714f56ca55.png)
 
 ### High scores
 
 It contains the top players of the game.
 
-![image](https://user-images.githubusercontent.com/2739245/93560823-9fab8100-f948-11ea-8707-04c26300322e.png)
+![image](https://user-images.githubusercontent.com/2739245/93563952-8574a180-f94e-11ea-9ca8-78d15f865557.png)
 
 
 ## Future features
