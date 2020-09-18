@@ -46,6 +46,41 @@ Check out the live demo [here](https://grimoriumverum.netlify.app/)
 - This will open **http://localhost:8080** on your browser.
 - Banish those ghouls!
 
+## Game Doc
+
+### Hero
+
+Use the ◀️ and ▶️ keys to run and the 🔼 key to jump. To banish the spirits, use the **spacebar**.
+
+![image](https://user-images.githubusercontent.com/2739245/93560442-d0d78180-f947-11ea-824b-c251e4816c21.png)
+
+### Demon
+
+Jumps around a given area. If it touches you, you're possessed! Game over, Pal.
+
+![image](https://user-images.githubusercontent.com/2739245/93560508-f6648b00-f947-11ea-850e-848202469501.png)
+
+## Scenes
+
+### Main Scene
+
+Run and jumpr around banishing demons. Once you banish all the demons in the level, you pass on to the next level, where there will be more demons than before. The game only ends once you become possessed.
+
+![image](https://user-images.githubusercontent.com/2739245/93560639-404d7100-f948-11ea-90b9-9de426ea3960.png)
+
+### Game over
+
+Once you lose, you can register your final socre with your name here.
+
+![image](https://user-images.githubusercontent.com/2739245/93560747-74289680-f948-11ea-9731-46ca8e0f6dae.png)
+
+### High scores
+
+It contains the top players of the game.
+
+![image](https://user-images.githubusercontent.com/2739245/93560823-9fab8100-f948-11ea-8707-04c26300322e.png)
+
+
 ## Future features
 Bring to life more aspects of the Grimorium Verum:
 
