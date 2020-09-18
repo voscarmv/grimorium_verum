@@ -48,7 +48,7 @@ export default class ScoreScreen extends Phaser.Scene {
 
             for (let i = 0; i < 10; i += 1) {
               this.add.text(200, j, `${scores.result[i].user}`);
-              this.add.text(300, j, `${scores.result[i].score}`);
+              this.add.text(600, j, `${scores.result[i].score}`);
               j += 20;
             }
 
